@@ -137,7 +137,7 @@ def restart_game():
     imagens = []
     canvas.delete("all")
     lines()
-    if gameOver.winfo_exists():  # Verifica se a janela "Game-Over" ainda existe
+    if gameOver.winfo_exists(): 
         gameOver.destroy()
 
 window = tk.Tk()
@@ -161,20 +161,3 @@ canvas.bind("<Button-1>", play)
 lines()
 
 window.mainloop()
-
-
-
-# def abrir_nova_janela():
-#     nova_janela = tk.Toplevel(root)  # Cria uma nova janela de nível superior
-#     nova_label = tk.Label(nova_janela, text="Nova Janela")
-#     nova_label.pack()
-
-#     # Enviando informações para a nova janela
-#     nova_info = "Informação enviada para a nova janela"
-#     nova_label_info = tk.Label(nova_janela, text=nova_info)
-#     nova_label_info.pack()
-
-# root = tk.Tk()
-
-# botao = tk.Button(root, text="Abrir Nova Janela", command=abrir_nova_janela)
-# botao.pack()
