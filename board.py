@@ -6,13 +6,14 @@ number = 0
 imagens = []
 screen_width = 0
 screen_height = 0
+winner_found = False
 def play(event):
     x = event.x
     y = event.y
     spotx = -1
     spoty = -1
     spot = 0
-    global number
+    global number, winner_found
     if x < width/3:
         if y < height/3:
             spotx = 0
@@ -64,7 +65,7 @@ def play(event):
     
     else:
         print("Choose an empty spot to play.")
-    if verifyWinner():
+    if verifyWinner() and winner_found == False:
         if number%2 == 0:
             winner = "The winner is O!"
             color = "blue"
@@ -72,8 +73,9 @@ def play(event):
             winner = "The winner is X!"
             color="red"
         game_over_window(winner, color)
+        winner_found = True
         
-    if number == 9:
+    if number == 9 and winner_found == False:
         game_over_window("There was no winner!", "gray")
 
 def close():
@@ -126,7 +128,8 @@ def game_over_window(winner, color):
     button.pack(fill="both", expand=True)
 
 def restart_game():
-    global number, gameArray, imagens
+    global number, gameArray, imagens, winner_found
+    winner_found = False
     number = 0
     gameArray = [0, 0, 0, 0, 0, 0, 0, 0, 0]
     for imagem in imagens:
