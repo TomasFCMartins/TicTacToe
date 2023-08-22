@@ -90,18 +90,20 @@ def verifyWinner():
     return False
                                                             
 def placeImg(spotx, spoty, num):
-    if num == 1:
-        imagem = PhotoImage(file="TicTacToe/img/x.png")
-    else:
-        imagem = PhotoImage(file="TicTacToe/img/o.png")
-    largura_imagem = imagem.width()
-    altura_imagem = imagem.height()
+    global winner_found
+    if winner_found == False:
+        if num == 1:
+            imagem = PhotoImage(file="TicTacToe/img/x.png")
+        else:
+            imagem = PhotoImage(file="TicTacToe/img/o.png")
+        largura_imagem = imagem.width()
+        altura_imagem = imagem.height()
 
-    x = (width/3 + spotx*width*2/3 - largura_imagem) // 2
-    y = (height/3 + spoty*height*2/3 - altura_imagem) // 2
-    canvas.create_image(x, y, anchor=tk.NW, image=imagem)
-    canvas.image = imagem  
-    imagens.append(imagem)
+        x = (width/3 + spotx*width*2/3 - largura_imagem) // 2
+        y = (height/3 + spoty*height*2/3 - altura_imagem) // 2
+        canvas.create_image(x, y, anchor=tk.NW, image=imagem)
+        canvas.image = imagem  
+        imagens.append(imagem)
 
 def lines():
     x1 = width/3
