@@ -4,6 +4,8 @@ from tkinter import PhotoImage
 gameArray=[0, 0, 0, 0, 0, 0, 0, 0, 0]
 number = 0
 imagens = []
+screen_width = 0
+screen_height = 0
 def play(event):
     x = event.x
     y = event.y
@@ -61,26 +63,21 @@ def play(event):
         number = number+1
     
     else:
-        print("Choose an empty spot to play")
+        print("Choose an empty spot to play.")
     if verifyWinner():
         if number%2 == 0:
-            winner = "O"
+            winner = "The winner is O!"
             color = "blue"
         else:
-            winner = "X"
+            winner = "The winner is X!"
             color="red"
-        button = tk.Button(window, text="Winner is " + winner + "!", command=close, width=10, height=5, bg=color)
-        button.pack(pady=280)
+        game_over_window(winner, color)
         
     if number == 9:
-        button = tk.Button(window, text="Press to restart!", command=close, height=10,)
-        button.pack(pady=280)
+        game_over_window("There was no winner!", "gray")
 
 def close():
     window.destroy()
-# 0 1 2
-# 3 4 5
-# 6 7 8
 
 def verifyWinner():      
     if ((gameArray[0] == gameArray[1] == gameArray[2] and gameArray[0] != 0) or (gameArray[3] == gameArray[4] == gameArray[5] and gameArray[3] != 0) or 
@@ -100,8 +97,6 @@ def placeImg(spotx, spoty, num):
 
     x = (width/3 + spotx*width*2/3 - largura_imagem) // 2
     y = (height/3 + spoty*height*2/3 - altura_imagem) // 2
-
-    
     canvas.create_image(x, y, anchor=tk.NW, image=imagem)
     canvas.image = imagem  
     imagens.append(imagem)
@@ -117,11 +112,40 @@ def lines():
     canvas.create_line(0, y1, width, y1, fill="black", width=line_width)
     canvas.create_line(0, y2, width, y2, fill="black", width=line_width)
 
+def game_over_window(winner, color):
+    global gameOver
+    gameOver = tk.Toplevel(window)
+    widthGO = 200
+    heightGO = 100
+    x = (screen_width - widthGO) // 2
+    y = (screen_height - heightGO) // 2
+    size = f"{widthGO}x{heightGO}+{x}+{y}"
+    gameOver.geometry(size)
+    gameOver.overrideredirect(True)
+    button = tk.Button(gameOver, text=winner + "\n" + "Press to restart!", command=restart_game, height=10, bg=color)
+    button.pack(fill="both", expand=True)
+
+def restart_game():
+    global number, gameArray, imagens
+    number = 0
+    gameArray = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    for imagem in imagens:
+        imagem.blank()
+    imagens = []
+    canvas.delete("all")
+    lines()
+    if gameOver.winfo_exists():  # Verifica se a janela "Game-Over" ainda existe
+        gameOver.destroy()
+
 window = tk.Tk()
 window.title("Board")
 width = 900
 height = 600
-size = f"{width}x{height}"
+screen_width = window.winfo_screenwidth()
+screen_height = window.winfo_screenheight()
+x = (screen_width - width) // 2
+y = (screen_height - height) // 2
+size = f"{width}x{height}+{x}+{y}"
 window.geometry(size)
 whiteBG = tk.Frame(window, bg="white")
 whiteBG.place(relwidth=1, relheight=1)
@@ -134,3 +158,20 @@ canvas.bind("<Button-1>", play)
 lines()
 
 window.mainloop()
+
+
+
+# def abrir_nova_janela():
+#     nova_janela = tk.Toplevel(root)  # Cria uma nova janela de nível superior
+#     nova_label = tk.Label(nova_janela, text="Nova Janela")
+#     nova_label.pack()
+
+#     # Enviando informações para a nova janela
+#     nova_info = "Informação enviada para a nova janela"
+#     nova_label_info = tk.Label(nova_janela, text=nova_info)
+#     nova_label_info.pack()
+
+# root = tk.Tk()
+
+# botao = tk.Button(root, text="Abrir Nova Janela", command=abrir_nova_janela)
+# botao.pack()
