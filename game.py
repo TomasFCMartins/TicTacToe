@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import PhotoImage
-
+import sys
+import subprocess
 gameArray=[0, 0, 0, 0, 0, 0, 0, 0, 0]
 number = 0
 imagens = []
@@ -157,8 +158,11 @@ whiteBG.place(relwidth=1, relheight=1)
 
 canvas = tk.Canvas(whiteBG, width=width, height=height, bg="white")
 canvas.pack()
+if len(sys.argv) >= 1:
+    if int(sys.argv[1]) == 1:
+        print("hey")
+        canvas.bind("<Button-1>", play)
 
-canvas.bind("<Button-1>", play)
 
 lines()
 
