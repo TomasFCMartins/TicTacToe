@@ -2,66 +2,59 @@ import tkinter as tk
 from tkinter import PhotoImage
 import sys
 import subprocess
+import random
 gameArray=[0, 0, 0, 0, 0, 0, 0, 0, 0]
 number = 0
 imagens = []
 screen_width = 0
 screen_height = 0
 winner_found = False
-def play(event):
+bot = False
+def start_game(event, opt, level):
+    if opt == 1:
+        playMult(event)
+    else:
+        if level == 0:
+            AI_level_one(event)
+
+def checkSpot(event):
     x = event.x
     y = event.y
-    spotx = -1
-    spoty = -1
     spot = 0
     global number, winner_found
     if x < width/3:
         if y < height/3:
-            spotx = 0
-            spoty = 0
             spot = 0
         elif y > height/3 and y < height*2/3:
-            spotx = 0
-            spoty = 1
             spot = 1
         elif y > height*2/3 and y < height:
-            spotx = 0
-            spoty = 2
             spot = 2
     elif x > width/3 and x < width*2/3:
         if y < height/3:
-            spotx = 1
-            spoty = 0
             spot = 3
         elif y > height/3 and y < height*2/3:
-            spotx = 1
-            spoty = 1
             spot = 4
         elif y > height*2/3 and y < height:
-            spotx = 1
-            spoty = 2
             spot = 5
     elif x > width*2/3 and x < width:
         if y < height/3:
-            spotx = 2
-            spoty = 0
             spot = 6
         elif y > height/3 and y < height*2/3:
-            spotx = 2
-            spoty = 1
             spot = 7
         elif y > height*2/3 and y < height:
-            spotx = 2
-            spoty = 2
             spot = 8
-    
+    return spot
+
+def playMult(event):
+    global number, winner_found
+    spot = checkSpot(event)
     if gameArray[spot] == 0:
         if number % 2 == 0:
             gameArray[spot] = 1
-            placeImg(spotx, spoty, 1)
+            convert(spot, 1)
         else:
             gameArray[spot] = 2
-            placeImg(spotx, spoty, 2)
+            convert(spot, 2)
         number = number+1
     
     else:
@@ -79,6 +72,62 @@ def play(event):
     if number == 9 and winner_found == False:
         game_over_window("There was no winner!", "gray")
 
+def play_bot():
+    global bot, number
+    randomspot = random.randint(0, 8)
+    if gameArray[randomspot] == 0:
+        if number % 2 == 0:
+            gameArray[randomspot] = 1
+            convert(randomspot, 1)
+        else:
+            gameArray[randomspot] = 2
+            convert(randomspot, 2)
+        number = number+1
+        bot = False
+
+    if verifyWinner() and not winner_found:
+        if number % 2 == 0:
+            winner = "The winner is O!"
+            color = "blue"
+        else:
+            winner = "The winner is X!"
+            color = "red"
+        game_over_window(winner, color)
+        winner_found = True
+
+    if number == 9 and not winner_found:
+        game_over_window("There was no winner!", "gray")
+
+def AI_level_one(event):
+    global bot, number
+    if bot:
+        play_bot()
+    else: 
+        playMult(event)
+        bot = True
+
+    
+
+
+def convert(spot, num):
+    if spot == 0:
+        placeImg(0, 0, num)
+    elif spot == 1:
+        placeImg(0, 1, num)
+    elif spot == 2:
+        placeImg(0, 2, num)
+    elif spot == 3:
+        placeImg(1, 0, num)
+    elif spot == 4:
+        placeImg(1, 1, num)
+    elif spot == 5:
+        placeImg(1, 2, num)
+    if spot == 6:
+        placeImg(2, 0, num)
+    elif spot == 7:
+        placeImg(2, 1, num)
+    elif spot == 8:
+        placeImg(2, 2, num)
 def close():
     window.destroy()
 
@@ -118,7 +167,7 @@ def lines():
     canvas.create_line(0, y2, width, y2, fill="black", width=line_width)
 
 def game_over_window(winner, color):
-    global gameOver
+    global gameOver, opt, level
     gameOver = tk.Toplevel(window)
     widthGO = 200
     heightGO = 100
@@ -158,11 +207,16 @@ whiteBG.place(relwidth=1, relheight=1)
 
 canvas = tk.Canvas(whiteBG, width=width, height=height, bg="white")
 canvas.pack()
+opt = 2
+level = 0
+
 if len(sys.argv) >= 1:
     if int(sys.argv[1]) == 1:
-        print("hey")
-        canvas.bind("<Button-1>", play)
+        opt = 1
 
+def group(event):
+    start_game(event, opt, level)       
+canvas.bind("<Button-1>", group)
 
 lines()
 
